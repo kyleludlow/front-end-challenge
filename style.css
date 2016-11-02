@@ -1,13 +1,38 @@
-body{font-family: "Arial"}
-a{text-decoration: none;}
+#container {
+  overflow: auto;
+}
 
-.product-container{width:300px; border:1px solid #aaa; margin:10px; display:inline-block;}
-.product-container img{width:100%; height:auto;}
-.row{width:946px;}
+#content {
+  margin-top: 15px;
+}
 
-.col1{float:left;}
-.col2{margin:10px auto;}
-.col3{float:right;}
+.page-title {
+  text-align: center;
+  font-size: 36px;
+}
 
-.title{font-size:20px;}
-.description{padding:10px;}
+.page-tagline {
+  text-align: center;
+  font-size: 18px;
+}
+
+a {
+    text-decoration: none !important;
+}
+
+.product-container {
+  padding: 10px;
+}
+
+.product-container img {
+    width: 100%;
+    height: auto;
+}
+
+.product-description {
+  padding:10px;
+  text-align: center;
+  font-size: 16px;
+  color: #0096ff;
+  background-color: white;
+}

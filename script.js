@@ -10,13 +10,13 @@ function domobj(){
         }
     });
   }
-    
+
   self.updateproducthtml = function(){
     for( i=0; i< self.products.length ; i++){
       self.products[i].updatehtml();
     }
   }
-  
+
   self.updatedom = function(){
     var i=0
     thishtml='';
@@ -27,7 +27,7 @@ function domobj(){
     }
     $("#content").append(thishtml)
   }
-  
+
 }
 
 function productobj(product, i){
@@ -39,7 +39,7 @@ function productobj(product, i){
   self.htmlview     = ""
   self.index        = i
   self.custom_class = "col"+ ((i % 3) +1)
-  
+
   self.updatehtml= function(){
     $.get('product-template.html', function(template){
       self.htmlview = template.replace('{image}', self.photo).replace('{title}', self.title).replace('{tagline}', self.tagline).replace('{url}', self.url).replace('{custom_class}', self.custom_class);
@@ -51,4 +51,4 @@ function productobj(product, i){
 var page=new domobj();
 page.getproducts('data.json');
 setTimeout("console.log('building html');page.updateproducthtml();",20);
-setTimeout("page.updatedom()",50)
+setTimeout("page.updatedom()", 1500)
