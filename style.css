@@ -113,3 +113,10 @@ a {
     visibility: hidden;
   }
 }
+
+/* LOADING */
+
+.loading {
+  display: block;
+  margin: auto;
+}

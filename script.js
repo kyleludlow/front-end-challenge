@@ -7,56 +7,67 @@
     this.products = [];
   }
 
+  // Fetches JSON data
   ProductContainer.prototype.getProducts = function(url) {
     var self = this;
     return $.getJSON(url)
       .then(function(response) {
-        return self.pushProductsToArray(response);
+        return self._pushProductsToArray(response);
     })
   };
 
-  ProductContainer.prototype.pushProductsToArray = function(productResponse) {
+  // Maps required JSON product info to products array
+  ProductContainer.prototype._pushProductsToArray = function(productResponse) {
     var self = this;
     productResponse.sales.map(function(product, index) {
       return self.products.push(new Product(product, index));
     });
 
-    return self.getProductTemplate();
+    return self._getProductTemplate();
   }
 
-  ProductContainer.prototype.getProductTemplate = function() {
+  // Fetches the product HTML template for updating
+  ProductContainer.prototype._getProductTemplate = function() {
     var self = this;
     return $.get('product-template.html')
       .then(function(template) {
-        return self.updateProductHtml(template);
+        return self._updateProductHtml(template);
       });
   };
 
-  ProductContainer.prototype.updateProductHtml = function(template) {
+  // Updates product HTML template with individual product data
+  ProductContainer.prototype._updateProductHtml = function(template) {
 
     this.products.map(function(product) {
       return product.updateHtml(template)
     });
 
-    return this.updateDom();
+    return this._updateDom();
   };
 
-  ProductContainer.prototype.updateDom = function() {
+  // concatenates all HTML from products
+  // removes loading image
+  // appends the HTML to the content container
+  // adds event listener for removal of products
+  ProductContainer.prototype._updateDom = function() {
     var thisHtml = '';
 
     this.products.map(function(product) {
       return thisHtml += product.htmlview
     });
 
+    $(".loading").remove();
     $("#content").append(thisHtml)
-    this.addRemoveProductEvent();
+    this._addRemoveProductEvent();
   };
 
-  ProductContainer.prototype.addRemoveProductEvent = function() {
+  // adds on-click event listener
+  ProductContainer.prototype._addRemoveProductEvent = function() {
     return $('#content').on('click', '.remove-product-x', this.removeProduct);
   }
 
-  ProductContainer.prototype.removeProduct = function(e) {
+  // hides product container from the DOM on click
+  ProductContainer.prototype._removeProduct = function(e) {
     e.preventDefault();
     var productToRemove = $(this.closest('.product-container'));
     return productToRemove.hide('slow');
@@ -74,6 +85,7 @@
     this.index        = i
   }
 
+  // provides individual product data for HTML template
   Product.prototype.updateHtml = function(template) {
     return this.htmlview = template.replace('{image}', this.photo)
                                    .replace('{title}', this.title)
@@ -91,99 +103,3 @@
   })();
 
 })(window.jQuery);
-
-
-
-/****************************
-  ES6 (if it were usable)
-****************************/
-
-/*
-
-($ => {
-
-
- // PRODUCT CONTAINER
-
-  function ProductContainer() {
-    this.products = [];
-  }
-
-  ProductContainer.prototype.getProducts = url => {
-    let self = this;
-    return $.getJSON(url)
-      .then(response => self.pushProductsToArray(response));
-  };
-
-  ProductContainer.prototype.pushProductsToArray = productResponse => {
-
-    productResponse.sales.map((product, index) => {
-      return this.products.push(new Product(product, index));
-    });
-
-    return this.getProductTemplate();
-  }
-
-  ProductContainer.prototype.getProductTemplate = () => {
-    let self = this;
-    return $.get('product-template.html')
-      .then(template => self.updateProductHtml(template));
-  };
-
-  ProductContainer.prototype.updateProductHtml = template => {
-
-    this.products.map(product => product.updateHtml(template));
-
-    return this.updateDom();
-  };
-
-  ProductContainer.prototype.updateDom = () => {
-    let thisHtml = '';
-
-    this.products.map(product => thisHtml += product.htmlview);
-
-    $("#content").append(thisHtml)
-    this.addRemoveProductEvent();
-  };
-
-  ProductContainer.prototype.addRemoveProductEvent = () => {
-    return $('#content').on('click', '.remove-product-x', this.removeProduct);
-  }
-
-  ProductContainer.prototype.removeProduct = e => {
-    e.preventDefault();
-    let productToRemove = $(this.closest('.product-container'));
-    return productToRemove.hide('slow');
-  }
-
- // PRODUCT
-
-  function Product(product, i) {
-    this.photo        = product.photos.medium_half
-    this.title        = product.name
-    this.tagline      = product.tagline
-    this.url          = product.url
-    this.description  = product.description
-    this.htmlview     = ""
-    this.index        = i
-  }
-
-  Product.prototype.updateHtml = template => {
-    return this.htmlview = template.replace('{image}', this.photo)
-                                   .replace('{title}', this.title)
-                                   .replace('{tagline}', this.tagline)
-                                   .replace('{url}', this.url)
-                                   .replace('{description}', this.description)
-  };
-
-
-// INITIATE APP
-
-  (function init() {
-    var productContainer = new ProductContainer();
-    productContainer.getProducts('data.json');
-  })();
-
-})(window.jQuery);
-
-*/
