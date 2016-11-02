@@ -63,7 +63,7 @@
 
   // adds on-click event listener
   ProductContainer.prototype._addRemoveProductEvent = function() {
-    return $('#content').on('click', '.remove-product-x', this.removeProduct);
+    return $('#content').on('click', '.remove-product-x', this._removeProduct);
   }
 
   // hides product container from the DOM on click
