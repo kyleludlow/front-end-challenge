@@ -1,58 +1,83 @@
+(function($) {
 
-function domobj(){
-  var self        =this;
-  self.products   = [];
 
-  self.getproducts = function(url){
-    $.getJSON(url, function(response){
-        for(i=0; i<response.sales.length ; i++){
-          self.products.push( new productobj(response.sales[i], i)  );
-        }
-    });
+/* PRODUCT CONTAINER */
+
+  function ProductContainer() {
+    this.products = [];
   }
 
-  self.updateproducthtml = function(){
-    for( i=0; i< self.products.length ; i++){
-      self.products[i].updatehtml();
+  ProductContainer.prototype.getProducts = function(url) {
+    var self = this;
+    return $.getJSON(url)
+      .then(function(response) {
+        return self.pushProductsToArray(response);
+    })
+  };
+
+  ProductContainer.prototype.pushProductsToArray = function(productResponse) {
+    for (var i = 0; i < productResponse.sales.length; i++){
+      this.products.push(new Product(productResponse.sales[i], i));
     }
+
+    return this.getProductTemplate();
   }
 
-  self.updatedom = function(){
-    var i=0
-    thishtml='';
-    for( i=0; i< self.products.length ; i++){
-      thishtml += self.products[i].htmlview;
+  ProductContainer.prototype.getProductTemplate = function() {
+    var self = this;
+    return $.get('product-template.html')
+      .then(function(template) {
+        return self.updateProductHtml(template);
+      });
+  };
+
+  ProductContainer.prototype.updateProductHtml = function(template) {
+    console.log('UPDATEPRODUCTHTML ran');
+
+    for (var i = 0; i < this.products.length; i++) {
+      this.products[i].updateHtml(template);
     }
+
+    return this.updateDom();
+  };
+
+  ProductContainer.prototype.updateDom = function() {
+    console.log('UPDATEDOM ran');
+
+    thishtml = '';
+    for (var i = 0; i < this.products.length; i++){
+      thishtml += this.products[i].htmlview;
+    }
+
     $("#content").append(thishtml)
+  };
+
+/* PRODUCT */
+
+  function Product(product, i) {
+    this.photo        = product.photos.medium_half
+    this.title        = product.name
+    this.tagline      = product.tagline
+    this.url          = product.url
+    this.description  = product.description
+    this.htmlview     = ""
+    this.index        = i
+    this.custom_class = "col"+ ((i % 3) +1)
   }
 
-}
-
-function productobj(product, i){
-  var self          = this;
-  self.photo        = product.photos.medium_half
-  self.title        = product.name
-  self.tagline      = product.tagline
-  self.url          = product.url
-  self.description  = product.description
-  self.htmlview     = ""
-  self.index        = i
-  self.custom_class = "col"+ ((i % 3) +1)
-
-  self.updatehtml= function(){
-    $.get('product-template.html', function(template){
-      self.htmlview = template.replace('{image}', self.photo)
-                              .replace('{title}', self.title)
-                              .replace('{tagline}', self.tagline)
-                              .replace('{url}', self.url)
-                              .replace('{description}', self.description)
-                              .replace('{custom_class}', self.custom_class);
-    });
-  }
-}
+  Product.prototype.updateHtml = function(template) {
+    return this.htmlview = template.replace('{image}', this.photo)
+                                   .replace('{title}', this.title)
+                                   .replace('{tagline}', this.tagline)
+                                   .replace('{url}', this.url)
+                                   .replace('{description}', this.description)
+                                   .replace('{custom_class}', this.custom_class);
+  };
 
 
-var page=new domobj();
-page.getproducts('data.json');
-setTimeout("console.log('building html');page.updateproducthtml();",20);
-setTimeout("page.updatedom()", 1500)
+  (function init() {
+    var productContainer = new ProductContainer();
+    productContainer.getProducts('data.json');
+  })();
+
+})(window.jQuery);
