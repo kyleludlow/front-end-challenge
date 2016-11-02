@@ -32,7 +32,6 @@
   };
 
   ProductContainer.prototype.updateProductHtml = function(template) {
-    console.log('UPDATEPRODUCTHTML ran');
 
     for (var i = 0; i < this.products.length; i++) {
       this.products[i].updateHtml(template);
@@ -42,7 +41,6 @@
   };
 
   ProductContainer.prototype.updateDom = function() {
-    console.log('UPDATEDOM ran');
 
     thishtml = '';
     for (var i = 0; i < this.products.length; i++){
@@ -50,7 +48,19 @@
     }
 
     $("#content").append(thishtml)
+    this.addRemoveProductEvent();
   };
+
+  ProductContainer.prototype.addRemoveProductEvent = function() {
+    return $('#content').on('click', '.remove-product-x', this.removeProduct);
+  }
+
+  ProductContainer.prototype.removeProduct = function(e) {
+    console.log(e);
+    e.preventDefault();
+    var productToRemove = $(this.closest('.product-container'));
+    return productToRemove.hide('slow');
+  }
 
 /* PRODUCT */
 
@@ -62,7 +72,6 @@
     this.description  = product.description
     this.htmlview     = ""
     this.index        = i
-    this.custom_class = "col"+ ((i % 3) +1)
   }
 
   Product.prototype.updateHtml = function(template) {
@@ -71,9 +80,10 @@
                                    .replace('{tagline}', this.tagline)
                                    .replace('{url}', this.url)
                                    .replace('{description}', this.description)
-                                   .replace('{custom_class}', this.custom_class);
   };
 
+
+/* INITIATE APP */
 
   (function init() {
     var productContainer = new ProductContainer();
