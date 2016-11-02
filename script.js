@@ -21,9 +21,7 @@ function domobj(){
     var i=0
     thishtml='';
     for( i=0; i< self.products.length ; i++){
-      if (i % 3 == 0 ){  thishtml += "<div class='row'>"; console.log("START") }
       thishtml += self.products[i].htmlview;
-      if ((i % 3 == 2) || i == (self.products.length-1) ){thishtml += "</div>";console.log("FINISH")}
     }
     $("#content").append(thishtml)
   }
